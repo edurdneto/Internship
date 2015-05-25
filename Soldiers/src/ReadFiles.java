@@ -11,24 +11,24 @@ public class ReadFiles {
 
 	public static void main(String[] args) {
 		
-		String csvFile = "/Users/eduardo/Downloads/soldiers-2files-2/Soldiers.csv";
-		String csvFile2= "/Users/eduardo/Downloads/soldiers-2files-2/casualties.csv";
-		BufferedReader br = null;
-		String line = "";
-		String cvsSplitBy = ",";
+		//String csvFile = "/Users/eduardo/Downloads/soldiers-2files-2/Soldiers.csv";
+		//String csvFile2= "/Users/eduardo/Downloads/soldiers-2files-2/casualties.csv";
+		//BufferedReader br = null;
+		//String line = "";
+		//String cvsSplitBy = ",";
 		
 		try{
-			br = new BufferedReader(new FileReader(csvFile));
-			line = br.readLine();
+			//br = new BufferedReader(new FileReader(csvFile));
+			//line = br.readLine();
 			
 			//1.Get Connection to database
-			Connection myConn=DriverManager.getConnection("jdbc:mysql://localhost:3306/soldiers","root","");
+			Connection myConn=DriverManager.getConnection("jdbc:mysql://localhost:3306/ISsoldiers","root","");
 			//2.Create a statement
 			Statement myStmt=myConn.createStatement();
 			//3.Execute SQL QUery
 			
 			//reading first file && inserting
-			Integer i=0;
+			//Integer i=0;
 			/*
 			while ((line = br.readLine()) != null) {
 				String[] temp= line.split(cvsSplitBy);
@@ -55,8 +55,9 @@ public class ReadFiles {
 				myStmt.executeUpdate(sql);
 				
 			}*/
+			// READING each element from the file and compare with each element in the table
 			
-			while((line=br.readLine())!=null){
+			/*while((line=br.readLine())!=null){
 				//can't handle with the whole table(need split it) 
 				ResultSet myRs=myStmt.executeQuery("select * from soldiersww1Mod where id<400000");
 				//First part
@@ -73,7 +74,23 @@ public class ReadFiles {
 					//compare (id and rank are the only information that can match in both files)
 					//System.out.println(myRs2.getInt("id") + ","+myRs2.getString("surname"));
 				}
+			}*/
+			//comparing from two tables
+			ResultSet myRs=myStmt.executeQuery("select * from casualties");
+			while (myRs.next()){
+				Statement myStmt2=myConn.createStatement();
+				ResultSet myRs2=myStmt2.executeQuery("select * from soldiersww1 where ID<100000");
+				while(myRs2.next()){
+					//compare PROBLEM=VERY SLOW
+				}
+				myRs2.close();
+				/*ResultSet myRs3=myStmt2.executeQuery("select * from soldiersww1 where ID>=400000");
+				while(myRs3.next()){
+					//compare
+				}*/
 			}
+			System.out.println("fim");
+			
 		}
 		catch (Exception exc){
 			exc.printStackTrace();
