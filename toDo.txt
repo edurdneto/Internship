@@ -1,0 +1,7 @@
+1. Heap size problem(DONE)
+2. Try Vanessa's aproach :
+from each element from the casualties file, get the name and create a list of elements in the soldier file that has the same name.
+3. I am not sure if that will be necessary or if it is the correct way to do so, because we will have to integrate those files. WHat I can do
+is Create different heaps.
+4. Lets try the easy way first(save a heap with everything).
+5 Collect statistics.
