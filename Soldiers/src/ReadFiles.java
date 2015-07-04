@@ -135,15 +135,36 @@ public class ReadFiles {
 		System.out.println(s.getTotal());
 		System.out.println("Distinct names:"+reglis.size());
 	}
+	
+	static void findDuplicates(){
+		Statistic s=new Statistic();
+		s.createListNameTriplas();
+		ArrayList<Name>n=new ArrayList<Name>();
+		n=s.getNames();
+		n=s.sortLNames(n);
+		int i=1;
+		while(i<n.size()){
+			if(n.get(i).getLname().equals(n.get(i-1).getLname())&&n.get(i).getFname().equals(n.get(i-1).getFname())&&n.get(i).getRegiment().equals(n.get(i-1).getRegiment())){
+				System.out.println(n.get(i-1).getLname()+","+n.get(i-1).getFname()+","+n.get(i-1).getRegiment());
+			}
+			i++;
+		}
+		
+	}
 
 	public static void main(String[] args) throws IOException {
 		
-		//COMPARE
+		//---------COMPARE----------
+		
 		Compare c=new Compare();
 		c.startCompare();
-		System.out.println("Soldiers:"+c.getListSoldierS().get(0).getLname());
-		System.out.println("Casualties:"+c.getListSoldierC().get(0).getLname());
 		System.out.println(c.getHints());
+		
+		
+		//---------Find duplicates----
+		
+		//findDuplicates();
+		
 		
 		//String csvFile = "/Users/eduardo/Downloads/soldiers-2files/Soldiers.csv";
 		//String csvFile2= "/Users/eduardo/Downloads/soldiers-2files-2/casualties.csv";
@@ -152,12 +173,14 @@ public class ReadFiles {
 		//String cvsSplitBy = ",";
 		//ArrayList<Soldier>myArray=new ArrayList<Soldier>();
 		
+		//------------GETING SOME STATISTICS-------------
+		/*
+		getLastNameStatistic();
+		getLNFNStatistic();
+		getLNFNStatistic();
+		getLNFNRRegStatistic();
+		*/
 		
-		//GETING SOME STATISTICS
-		//getLastNameStatistic();
-		//getLNFNStatistic();
-		//getLNFNStatistic();
-		//getLNFNRRegStatistic();
 		//get full list of soldiers
 		
 		/*

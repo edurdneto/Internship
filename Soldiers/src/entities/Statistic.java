@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.lang.*;
+//import java.lang.*;
 
 /**
  * @author eduardo
@@ -75,6 +75,36 @@ public class Statistic {
 	public void setcMissingFname(int cMissingFname) {
 		this.cMissingFname = cMissingFname;
 	}
+	
+	public void createListNameTriplas(){
+		String csvFile = "/Users/eduardo/Desktop/Internship/Soldiers/bin/res/match.csv";
+		BufferedReader br = null;
+		
+		String line = "";
+		String cvsSplitBy = ",";
+		ArrayList<Name>myArray=new ArrayList<Name>();
+		
+		try{
+			br = new BufferedReader(new FileReader(csvFile));
+			line = br.readLine();
+			while ((line = br.readLine()) != null) {
+				String[] temp= line.split(cvsSplitBy);
+				Name n=new Name();
+				n.setLname(temp[0]);
+				n.setFname(temp[1]);
+				//System.out.println(temp[2]);
+				n.setRegiment(temp[2]);
+				myArray.add(n);
+				
+			}
+			this.setNames(myArray);
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+		}
+		
+	}
+		
 
 	public void createListName(int type){
 		//String csvFile = "/Users/eduardo/Downloads/soldiers-2files/Soldiers.csv";
@@ -247,6 +277,18 @@ public class Statistic {
 	        {
 
 	            return  Float.compare(n1.freq,n2.freq);
+	        }
+	    });
+		return n;
+	}
+	
+	public ArrayList<Name> sortLNames(ArrayList<Name> n){
+		Collections.sort(n, new Comparator<Name>() {
+	        @Override
+	        public int compare(Name  n1, Name  n2)
+	        {
+
+	        	return  n1.Lname.compareTo(n2.Lname);
 	        }
 	    });
 		return n;

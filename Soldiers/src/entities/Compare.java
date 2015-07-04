@@ -3,7 +3,6 @@ package entities;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -65,6 +64,7 @@ public class Compare {
 				Soldier s=new Soldier();	
 				s.setLname(temp[0]);
 				s.setFname(temp[1]);
+				s.setRank(temp[3]);
 				s.setRegimental(temp[4]);
 				myArray.add(s);
 				this.setListSoldierS(myArray);
@@ -93,6 +93,7 @@ public class Compare {
 				Soldier s=new Soldier();	
 				s.setLname(temp[0]);
 				s.setFname(temp[1]);
+				s.setRank(temp[4]);
 				s.setRegimental(temp[3]);
 				myArray.add(s);
 				this.setListSoldierC(myArray);
@@ -104,21 +105,75 @@ public class Compare {
 		
 	}
 	
+	public void createSoldierListC_noMatch(){
+		String csvFile = "/Users/eduardo/Desktop/Internship/Soldiers/NotMatch.csv";
+		BufferedReader br = null;
+		
+		String line = "";
+		String cvsSplitBy = ",";
+		ArrayList<Soldier>myArray=new ArrayList<Soldier>();
+		
+		try{
+			br = new BufferedReader(new FileReader(csvFile));
+			line = br.readLine();
+			while ((line = br.readLine()) != null) {
+				String[] temp= line.split(cvsSplitBy);
+				Soldier s=new Soldier();	
+				s.setLname(temp[0]);
+				s.setFname(temp[1]);
+				s.setRank(temp[3]);
+				s.setRegimental(temp[2]);
+				myArray.add(s);
+				this.setListSoldierC(myArray);
+			}
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+		}
+		
+	}
+	
+	public void createSoldierListC_noMatch2(){
+		String csvFile = "/Users/eduardo/Desktop/Internship/Soldiers/NotMatch_2sdLvl.csv";
+		BufferedReader br = null;
+		
+		String line = "";
+		String cvsSplitBy = ",";
+		ArrayList<Soldier>myArray=new ArrayList<Soldier>();
+		
+		try{
+			br = new BufferedReader(new FileReader(csvFile));
+			line = br.readLine();
+			while ((line = br.readLine()) != null) {
+				String[] temp= line.split(cvsSplitBy);
+				Soldier s=new Soldier();	
+				s.setLname(temp[0]);
+				s.setFname(temp[1]);
+				s.setRank(temp[3]);
+				s.setRegimental(temp[2]);
+				myArray.add(s);
+				this.setListSoldierC(myArray);
+			}
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+		}
+		
+	}
+
+	
 	public void startCompare() throws IOException{
 		String FILE_HEADER = "Lname,Fname,Freq,Times,Rank,Regiment";
-		//String NEW_LINE_SEPARATOR = "\n";
 		PrintWriter outputStream = null;
+		PrintWriter outputStream2 = null;
 		this.createSoldierListS();
-		this.createSoldierListC();
+		//this.createSoldierListC(); //Full file comparetion
+		//this.createSoldierListC_noMatch(); //compare only with noMatch
+		this.createSoldierListC_noMatch2();
 		int i=0;
-		//FileWriter fileWriter = null;
 		try {
-			//fileWriter = new FileWriter("ListMatch.csv");
-			//Write the CSV file header
-			//fileWriter.append(FILE_HEADER.toString());
-			//Add a new line separator after the header
-			//fileWriter.append(NEW_LINE_SEPARATOR);
-			outputStream= new PrintWriter(new FileOutputStream("match.txt"));
+			outputStream= new PrintWriter(new FileOutputStream("match_3sLvl.csv"));
+			outputStream2= new PrintWriter(new FileOutputStream("NotMatch_3sdLvl.csv"));
 			
 			
 		} catch (IOException e) {
@@ -126,12 +181,15 @@ public class Compare {
 			e.printStackTrace();
 		}
 		outputStream.println(FILE_HEADER);
+		outputStream2.println(FILE_HEADER);
 		while(i<this.listSoldierC.size()){
-			findmatch(listSoldierC.get(i), this.getListSoldierS(),outputStream);
-			i++;
+			findmatch(listSoldierC.get(i), this.getListSoldierS(),outputStream,outputStream2,2); //first name compare
 			System.out.println(i);
+			i++;
+		
 		}
 		outputStream.close();
+		outputStream2.close();
 		
 	}
 
@@ -143,51 +201,154 @@ public class Compare {
 		return m;
 	}
 	
-	public void findmatch(Soldier s, ArrayList<Soldier> listSoldier, PrintWriter outputStream) throws IOException {
+	public void findmatch(Soldier s, ArrayList<Soldier> listSoldier, PrintWriter outputStream,PrintWriter outputStream2) throws IOException {
+		int i=0,found=-1;
 		String COMMA_DELIMITER = ",";
 		String NEW_LINE_SEPARATOR = "\n";
-		//String FILE_HEADER = "Lname,Fname,Freq,Times,Rank,Regiment";
-		//FileWriter fileWriter = null;
 		
-		
-			//fileWriter = new FileWriter("ListMatch.csv");
-			 
-			//Write the CSV file header
-			//fileWriter.append(FILE_HEADER.toString());
-			//Add a new line separator after the header
-			//fileWriter.append(NEW_LINE_SEPARATOR);
+		int count=this.getHints();
 			
-			int i=0,found=-1;
-			int count=this.getHints();
+		String firstletter=String.valueOf(s.getLname().charAt(0));
 			
-			String firstletter=String.valueOf(s.getLname().charAt(0));
-			System.out.println(s.getLname());
-			
-			while(!(String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))){
-				i++;
-			}
-			System.out.println(firstletter);
-			while((String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))&&found==-1&&i<listSoldier.size()-1){
-				if(listSoldier.get(i).getLname().equals(s.getLname())&&listSoldier.get(i).getFname().equals(s.getFname())&&listSoldier.get(i).getRegimental().equals(s.getRegimental())){
-					found=1;
-					count++;
-					this.setHints(count);
-					System.out.println("soldier:"+s.getLname()+","+s.getFname()+","+s.getRegimental());
-					//outputStream.append(s.getLname());
-					//outputStream.append(COMMA_DELIMITER);
-					//outputStream.append(s.getFname());
-					//outputStream.append(COMMA_DELIMITER);
-					//outputStream.append(String.valueOf(s.getRegimental()));
-					//outputStream.append(NEW_LINE_SEPARATOR);
-					outputStream.println(s.getLname()+","+s.getFname()+","+String.valueOf(s.getRegimental()));
-				}
-				i++;
-			}
+		while(!(String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))){
+			i++;
+		}
+		while((String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))&&found==-1&&i<listSoldier.size()-1){
+			if(listSoldier.get(i).getLname().equals(s.getLname())&&listSoldier.get(i).getFname().equals(s.getFname())&&listSoldier.get(i).getRegimental().equals(s.getRegimental())){
+				found=1;
+				count++;
+				this.setHints(count);
+				//outputStream.println(s.getLname()+","+s.getFname()+","+String.valueOf(s.getRegimental()));
+				outputStream.append(s.getLname());
+				outputStream.append(COMMA_DELIMITER);
+				outputStream.append(s.getFname());
+				outputStream.append(COMMA_DELIMITER);
+				outputStream.append(s.getRegimental());
+				outputStream.append(COMMA_DELIMITER);
+				outputStream.append(s.getRank());
+				outputStream.append(COMMA_DELIMITER);
+				outputStream.append("0");
+				outputStream.append(NEW_LINE_SEPARATOR);
+			} 
+			i++;
+		}
+		if(found==-1) {
+			outputStream2.append(s.getLname());
+			outputStream2.append(COMMA_DELIMITER);
+			outputStream2.append(s.getFname());
+			outputStream2.append(COMMA_DELIMITER);
+			outputStream2.append(s.getRegimental());
+			outputStream2.append(COMMA_DELIMITER);
+			outputStream2.append(s.getRank());
+			outputStream2.append(COMMA_DELIMITER);
+			outputStream2.append("0");
+			outputStream2.append(NEW_LINE_SEPARATOR);
+		}
 
-			
-		
-
-		
 	}
+	
+	public void findmatch(Soldier s, ArrayList<Soldier> listSoldier, PrintWriter outputStream, PrintWriter outputStream2, int type) throws IOException {
+		int i=0,found=-1;
+		String COMMA_DELIMITER = ",";
+		String NEW_LINE_SEPARATOR = "\n";
+		
+		int count=this.getHints();
+			
+		String firstletter=String.valueOf(s.getLname().charAt(0));
+		String soldier1="";
+		String soldier2="";
+			
+		while(!(String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))){
+			i++;
+		}
+		switch (type){
+			case 1:
+				while((String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))&&found==-1&&i<listSoldier.size()-1){
+					soldier1=listSoldier.get(i).getFname();
+					String temp[]=soldier1.split(" ");
+					soldier2=s.getFname();
+					String temp2[]=soldier2.split(" ");
+					if(listSoldier.get(i).getLname().equals(s.getLname())&&listSoldier.get(i).getRegimental().equals(s.getRegimental())){
+						if(temp[0].equals(temp2[0])){
+							found=1;
+							count++;
+							this.setHints(count);
+							//outputStream.println(s.getLname()+","+s.getFname()+","+String.valueOf(s.getRegimental()));
+							outputStream.append(s.getLname());
+							outputStream.append(COMMA_DELIMITER);
+							outputStream.append(s.getFname());
+							outputStream.append(COMMA_DELIMITER);
+							outputStream.append(s.getRegimental());
+							outputStream.append(COMMA_DELIMITER);
+							outputStream.append(s.getRank());
+							outputStream.append(COMMA_DELIMITER);
+							outputStream.append("0");
+							outputStream.append(NEW_LINE_SEPARATOR);
+						}
+					}
+					i++;
+				}
+				if(found==-1) {
+					outputStream2.append(s.getLname());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append(s.getFname());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append(s.getRegimental());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append(s.getRank());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append("0");
+					outputStream2.append(NEW_LINE_SEPARATOR);
+				}
+
+			break;
+			case 2:
+				while((String.valueOf(listSoldier.get(i).getLname().charAt(0)).equals(firstletter))&&found==-1&&i<listSoldier.size()-1){
+					soldier1=listSoldier.get(i).getFname();
+					String temp[]=soldier1.split(" ");
+					soldier2=s.getFname();
+					String temp2[]=soldier2.split(" ");
+					if(listSoldier.get(i).getLname().equals(s.getLname())&&listSoldier.get(i).getRegimental().equals(s.getRegimental())){
+						if(!(temp[0].equals("")||temp2[0].equals(""))) {
+							String FL_1=String.valueOf(temp[0].charAt(0));
+							String FL_2=String.valueOf(temp2[0].charAt(0));
+							if(FL_1.equals(FL_2)){
+								found=1;
+								count++;
+								this.setHints(count);
+								//outputStream.println(s.getLname()+","+s.getFname()+","+String.valueOf(s.getRegimental()));
+								outputStream.append(s.getLname());
+								outputStream.append(COMMA_DELIMITER);
+								outputStream.append(s.getFname());
+								outputStream.append(COMMA_DELIMITER);
+								outputStream.append(s.getRegimental());
+								outputStream.append(COMMA_DELIMITER);
+								outputStream.append(s.getRank());
+								outputStream.append(COMMA_DELIMITER);
+								outputStream.append("0");
+								outputStream.append(NEW_LINE_SEPARATOR);
+							}
+						}
+					}
+					i++;
+				}
+				if(found==-1) {
+					outputStream2.append(s.getLname());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append(s.getFname());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append(s.getRegimental());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append(s.getRank());
+					outputStream2.append(COMMA_DELIMITER);
+					outputStream2.append("0");
+					outputStream2.append(NEW_LINE_SEPARATOR);
+				}
+
+			break;
+
+		}
+	}
+
 
 }

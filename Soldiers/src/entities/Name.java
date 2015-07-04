@@ -54,6 +54,7 @@ public class Name {
 		this.Lname = null;
 		this.Fname= null;
 		this.times = 0;
+		this.Regiment = " ";
 		this.Rank= null;
 		this.freq= 0;
 	}
