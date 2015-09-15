@@ -4,9 +4,12 @@
 package entities;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -253,6 +256,53 @@ public class Statistic {
 		}
 	}
 	
+	public void checkRankMatch() throws FileNotFoundException{
+		String csvFile = "/Users/eduardo/Desktop/Internship/Soldiers/match_noMISS.csv";
+		BufferedReader br = null;
+		String FILE_HEADER = "Lname,Fname,Regiment,RankCasualtie,RankSoldier";
+		PrintWriter outputStream = null;
+		outputStream= new PrintWriter(new FileOutputStream("rank_match.csv"));
+		String COMMA_DELIMITER = ",";
+		String NEW_LINE_SEPARATOR = "\n";
+		Integer i=0;
+		
+		
+		
+		String line = "";
+		String cvsSplitBy = ",";
+		
+		try{
+			br = new BufferedReader(new FileReader(csvFile));
+			outputStream.println(FILE_HEADER);
+			line = br.readLine();
+			while ((line = br.readLine()) != null) {
+				System.out.println(i);
+				String[] temp= line.split(cvsSplitBy);
+				if(temp[3].equals(temp[4])){
+					outputStream.append(temp[0]);
+					outputStream.append(COMMA_DELIMITER);
+					outputStream.append(temp[1]);
+					outputStream.append(COMMA_DELIMITER);
+					outputStream.append(temp[3]);
+					outputStream.append(COMMA_DELIMITER);
+					outputStream.append(temp[4]);
+					outputStream.append(COMMA_DELIMITER);
+					outputStream.append(temp[5]);
+					outputStream.append(COMMA_DELIMITER);
+					outputStream.append("0");
+					outputStream.append(NEW_LINE_SEPARATOR);
+					
+				}
+				i++;
+			}
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+		}
+		outputStream.close();
+		
+	}
+	
 	public int highestFrequency(ArrayList<Name> names){
 		int i=0,index=0;
 		float f;
@@ -280,6 +330,76 @@ public class Statistic {
 	        }
 	    });
 		return n;
+	}
+	
+	public void findDuplicates(String FileName) throws IOException{
+		BufferedReader br = null;
+		int count=0;
+		String line = "";
+		String cvsSplitBy = ",";
+		ArrayList<Soldier>myArray=new ArrayList<Soldier>();
+		
+		try{
+			br = new BufferedReader(new FileReader(FileName));
+			line = br.readLine();
+			while ((line = br.readLine()) != null) {
+				String[] temp= line.split(cvsSplitBy);
+				Soldier s=new Soldier();	
+				s.setLname(temp[0]);
+				s.setFname(temp[1]);
+				s.setRank(temp[6]);
+				s.setRegimental(temp[4]);
+				myArray.add(s);
+			}
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+		}
+		
+		String FILE_HEADER = "Lname,Fname,Regiment,RankCasualtie,RankSoldier,Junk";
+		PrintWriter outputStream = null;
+		
+		int i=0;
+		try {
+			outputStream= new PrintWriter(new FileOutputStream("match_match_NoMiss_B_4sLvl_DUPLICATE.csv"));
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		outputStream.println(FILE_HEADER);
+		String COMMA_DELIMITER = ",";
+		String NEW_LINE_SEPARATOR = "\n";
+		System.out.println("passei");
+		while(i<myArray.size()){
+			Soldier s1=myArray.get(i);
+			int j=i+1;
+			while(j<myArray.size()){
+				Soldier s2=myArray.get(j);
+				if(s1.getLname().equals(s2.getLname())&&s1.getRegimental().equals(s2.getRegimental())){
+					if(s1.getFname().equals(s2.getFname())){
+						count++;
+						outputStream.append(s1.getLname());
+						outputStream.append(COMMA_DELIMITER);
+						outputStream.append(s1.getFname());
+						outputStream.append(COMMA_DELIMITER);
+						outputStream.append(s1.getRegimental());
+						outputStream.append(COMMA_DELIMITER);
+						outputStream.append(s1.getRank());
+						outputStream.append(COMMA_DELIMITER);
+						outputStream.append("0");
+						outputStream.append(NEW_LINE_SEPARATOR);
+					}
+				}
+				j++;
+			}
+			System.out.println(i);
+			i++;
+		
+		}
+		outputStream.close();
+		System.out.println(count);
 	}
 	
 	public ArrayList<Name> sortLNames(ArrayList<Name> n){

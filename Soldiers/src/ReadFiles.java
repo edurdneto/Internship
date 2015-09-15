@@ -153,15 +153,24 @@ public class ReadFiles {
 	}
 
 	public static void main(String[] args) throws IOException {
+		//---COMPARING RANKS----
+		//Statistic s=new Statistic();
+		//s.checkRankMatch();
+		
+		
 		
 		//---------COMPARE----------
 		
 		Compare c=new Compare();
 		c.startCompare();
+		//c.CompareServiceNumber();
+		//c.selectBsoldiers();
 		System.out.println(c.getHints());
 		
 		
 		//---------Find duplicates----
+		//Statistic s=new Statistic();
+		//s.findDuplicates("/Users/eduardo/Desktop/Internship/Soldiers/match_NoMiss_B_4sLvl.csv");
 		
 		//findDuplicates();
 		
